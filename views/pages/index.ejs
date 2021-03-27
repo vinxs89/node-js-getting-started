@@ -61,6 +61,68 @@
   </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+const doAjaxCall = (endpoint) => {
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			url: endpoint,
+			type: "GET",
+			beforeSend: (xhr) => { 
+				xhr.setRequestHeader('x-api-key', 'caminomasca');
+				xhr.setRequestHeader('Accept', 'application/json');
+			},
+			success: (data) => resolve(data)
+		});
+	});
+}
 
+const start = async (endpoints) => {
+	const availableSeats = [];
+
+	const promises = endpoints.map(endpoint => doAjaxCall(endpoint));
+	const responses = await Promise.all(promises);
+	
+	responses.forEach(response => {
+		if (!response.availability) {
+			console.warn("No availability array");
+			return;
+		}
+		
+		response.availability.forEach(availability => {
+			if(!availability.sessions) {
+				console.warn("No sessions array");
+				return;
+			}
+			
+			availability.sessions.forEach(session => {
+				console.debug("Checking session for date " + availability.date + ": " + JSON.stringify(session));
+				
+				if(session.available && session.available > 0) {
+					availableSeats.push({
+						date: availability.date,
+						session: session.session
+					});
+				}
+			});
+		});
+	});
+	
+	if (availableSeats.length > 0 ) {
+		console.log('There are available seats');
+		availableSeats.forEach(console.log);
+	} else {
+		console.log('No seats available');
+	}
+}
+
+const endpoints = [
+	'https://api.volcanoteide.com/products/1927/availability/2021-03',
+	'https://api.volcanoteide.com/products/1927/availability/2021-04'
+];
+
+start(endpoints);
+
+</script>
 </body>
 </html>
