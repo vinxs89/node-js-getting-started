@@ -8,7 +8,6 @@ express()
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
-
 const req = require('request');
 
 const getData = (endpoint) => {
@@ -29,10 +28,9 @@ const getData = (endpoint) => {
 
 const notify = (data) => {
 	const options = {
-		url: '',
-		body: data
+		url: "https://maker.ifttt.com/trigger/masca_free_seats/with/key/with/key/jARj1nvnumuRBP6iroeMttEcuk10tQFtWI0IePvA3YY"
 	}
-	req.post(options, (err, res) => {
+	req.get(options, (err, res) => {
 		console.log('Notified: ' + JSON.stringify(data));
 	});
 };
@@ -44,6 +42,8 @@ const start = async (endpoints) => {
 	const responses = await Promise.all(promises);
 	
 	responses.forEach(response => {
+		response = response.body;
+		
 		if (!response.availability) {
 			console.warn("No availability array");
 			return;
@@ -83,7 +83,12 @@ const endpoints = [
 ];
 
 try {
+	notify();
 	start(endpoints);
+	
+	setInterval(() => {
+		start(endpoints);
+	}, 5 * 60 * 1000)
 } catch (e) {
 	console.error(e);
 }
