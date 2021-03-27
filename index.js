@@ -43,11 +43,8 @@ const start = async (endpoints) => {
 	const responses = await Promise.all(promises);
 	
 	responses.forEach(response => {
-		console.log("Response Before -> " + response);
-		response = response.body;
-		console.log("Response After -> " + response);
-		console.log("Availability -> " + response.availability);
-
+		response = JSON.parse(response.body);
+		
 		if (!response.availability) {
 			console.warn("No availability array");
 			return;
