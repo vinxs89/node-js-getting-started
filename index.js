@@ -67,10 +67,12 @@ const start = async (endpoints) => {
 					seats += session.available;
 				}
 			});
-			availableSeats.push({
-				date: availability.date,
-				seats: seats
-			});
+			if(seats > 0) {
+				availableSeats.push({
+					date: availability.date,
+					seats: seats
+				});
+			}
 		});
 	});
 	
