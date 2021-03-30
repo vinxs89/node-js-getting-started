@@ -29,14 +29,14 @@ const getData = (endpoint) => {
 
 const notify = (data) => {
 	let param = 'STARTED';
-	if (data && data.seats) {
-		param = [...new Set(data.seats.map(seat => seat.date))].join(',');
+	if (data && data.slots) {
+		param = data.slots.map(slot => slot.seats + ' seats on ' + slot.date).join(',');
 	}
 	const options = {
 		url: "https://maker.ifttt.com/trigger/masca_free_seats/with/key/jARj1nvnumuRBP6iroeMttEcuk10tQFtWI0IePvA3YY?value1=" + param
 	}
 	req.get(options, (err, res) => {
-		console.log('Notified: ' + JSON.stringify(data));
+		console.log('Notified: ' + param);
 	});
 };
 
@@ -60,15 +60,16 @@ const start = async (endpoints) => {
 				return;
 			}
 			
+			let seats = 0;
 			availability.sessions.forEach(session => {
 				console.debug("Checking session for date " + availability.date + ": " + JSON.stringify(session));
-				
 				if(session.available && session.available > 0) {
-					availableSeats.push({
-						date: availability.date,
-						session
-					});
+					seats += session.available;
 				}
+			});
+			availableSeats.push({
+				date: availability.date,
+				seats: seats
 			});
 		});
 	});
@@ -76,7 +77,7 @@ const start = async (endpoints) => {
 	if (availableSeats.length > 0 ) {
 		console.log('There are available seats :)');
 		availableSeats.forEach(console.log);
-		notify({ seats: availableSeats});
+		notify({ slots: availableSeats});
 	} else {
 		console.log('No seats available :(');
 	}
