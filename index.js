@@ -33,7 +33,7 @@ const notify = (data) => {
 		param = [...new Set(data.seats.map(seat => seat.date))].join(',');
 	}
 	const options = {
-		url: "https://maker.ifttt.com/trigger/masca_free_seats/with/key/jARj1nvnumuRBP6iroeMttEcuk10tQFtWI0IePvA3YY?Value1=" + param
+		url: "https://maker.ifttt.com/trigger/masca_free_seats/with/key/jARj1nvnumuRBP6iroeMttEcuk10tQFtWI0IePvA3YY?value1=" + param
 	}
 	req.get(options, (err, res) => {
 		console.log('Notified: ' + JSON.stringify(data));
