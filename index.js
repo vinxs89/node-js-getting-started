@@ -28,8 +28,12 @@ const getData = (endpoint) => {
 };
 
 const notify = (data) => {
+	let param = 'STARTED';
+	if (data && data.seats) {
+		param = [...new Set(data.seats.map(seat => seat.date))].join(',');
+	}
 	const options = {
-		url: "https://maker.ifttt.com/trigger/masca_free_seats/with/key/jARj1nvnumuRBP6iroeMttEcuk10tQFtWI0IePvA3YY"
+		url: "https://maker.ifttt.com/trigger/masca_free_seats/with/key/jARj1nvnumuRBP6iroeMttEcuk10tQFtWI0IePvA3YY?dates=" + param
 	}
 	req.get(options, (err, res) => {
 		console.log('Notified: ' + JSON.stringify(data));
@@ -84,9 +88,7 @@ const endpoints = [
 ];
 
 try {
-	notify();
-	start(endpoints);
-	
+	start(endpoints);	
 	setInterval(() => {
 		start(endpoints);
 	}, 5 * 60 * 1000)
