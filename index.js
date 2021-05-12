@@ -86,8 +86,7 @@ const start = async (endpoints) => {
 };
 
 const endpoints = [
-	'https://api.volcanoteide.com/products/1927/availability/2021-03',
-	'https://api.volcanoteide.com/products/1927/availability/2021-04'
+	'https://api.volcanoteide.com/products/1927/availability/2021-05'
 ];
 
 try {
